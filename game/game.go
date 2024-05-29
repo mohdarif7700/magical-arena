@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"magical-arena/dice"
 	"magical-arena/player"
 )
 
@@ -37,5 +38,21 @@ func SimulateMatch(player1, player2 *player.Player) {
 
 // Attack simulates an attack by the attacker on the defender
 func Attack(attacker, defender *player.Player) (int, int, int) {
-	return 0, 0, 0
+	attackRoll := dice.RollDice()
+	defendRoll := dice.RollDice()
+
+	attackDamage := attacker.Attack * attackRoll
+	defendStrength := defender.Strength * defendRoll
+
+	netDamage := attackDamage - defendStrength
+	if netDamage < 0 {
+		netDamage = 0
+	}
+
+	defender.Health -= netDamage
+	if defender.Health < 0 {
+		defender.Health = 0
+	}
+
+	return attackRoll, defendRoll, netDamage
 }
